@@ -16,23 +16,22 @@ const client = new Client({
   restRequestTimeout: 5000
 });
 
-// Login with email and password
+// Login with API key
 (async () => {
   try {
-    if (!process.env.COC_EMAIL || !process.env.COC_PASSWORD) {
-      throw new Error('COC_EMAIL and COC_PASSWORD must be set in .env file');
+    if (!process.env.COC_API_KEY) {
+      throw new Error('COC_API_KEY must be set in .env file');
     }
     
-    console.log('🔐 Logging in to Clash of Clans API...');
+    console.log('🔐 Logging in to Clash of Clans API with API key...');
     await client.login({
-      email: process.env.COC_EMAIL,
-      password: process.env.COC_PASSWORD
+      key: process.env.COC_API_KEY
     });
     console.log('✅ Successfully logged in to Clash of Clans API');
   } catch (error) {
     console.error('❌ Failed to login to Clash of Clans API:', error.message);
-    console.error('Please check your COC_EMAIL and COC_PASSWORD in .env file');
-    console.error('Make sure you are using valid Supercell ID credentials');
+    console.error('Please check your COC_API_KEY in .env file');
+    console.error('Make sure you have a valid API key from https://developer.clashofclans.com');
     process.exit(1);
   }
 })();
@@ -383,16 +382,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// Start server only after successful login
-const startServer = async () => {
-  // Wait a moment for login to complete
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  
-  app.listen(PORT, () => {
-    console.log(`🚀 CWL Tracker Backend running on port ${PORT}`);
-    console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
-    console.log(`🔐 Authentication: Email/Password`);
-  });
-};
-
-startServer();
+// Start server
+app.listen(PORT, () => {
+  console.log(`🚀 CWL Tracker Backend running on port ${PORT}`);
+  console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
+  console.log(`� No authentication - using public endpoints only`);
+});
