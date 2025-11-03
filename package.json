@@ -1,0 +1,7 @@
+{
+  "name": "cwl-tracker",
+  "version": "1.0.0",
+  "dependencies": {
+    "clashofclans.js": "^3.4.3"
+  }
+}
