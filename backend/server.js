@@ -37,12 +37,43 @@ const client = new Client({
   }
 })();
 
+// Helper function to ensure client is logged in
+const ensureLoggedIn = async () => {
+  try {
+    // Try a simple request to check if logged in
+    await client.getClan('#2PP');
+    console.log('✅ Client is logged in');
+  } catch (error) {
+    if (error.status === 403 || error.message.includes('Forbidden')) {
+      console.log('🔄 Re-logging in to Clash of Clans API...');
+      await client.login({
+        email: process.env.COC_EMAIL,
+        password: process.env.COC_PASSWORD
+      });
+      console.log('✅ Re-logged in successfully');
+    } else {
+      throw error;
+    }
+  }
+};
+
 // Cache for 5 minutes
 const cache = new NodeCache({ stdTTL: 300 });
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Ensure login middleware for API routes
+app.use('/api', async (req, res, next) => {
+  try {
+    await ensureLoggedIn();
+    next();
+  } catch (error) {
+    console.error('Login check failed:', error);
+    res.status(500).json({ error: 'Authentication failed' });
+  }
+});
 
 // Helper function to format clan tag
 const formatTag = (tag) => {
