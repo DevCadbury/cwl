@@ -9,32 +9,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Initialize Clash of Clans API client with email/password
+// Initialize Clash of Clans API client
 const client = new Client({
   cache: true,
   retryLimit: 3,
   restRequestTimeout: 5000
 });
 
-// Login with API key
-(async () => {
-  try {
-    if (!process.env.COC_API_KEY) {
-      throw new Error('COC_API_KEY must be set in .env file');
-    }
-    
-    console.log('🔐 Logging in to Clash of Clans API with API key...');
-    await client.login({
-      key: process.env.COC_API_KEY
-    });
-    console.log('✅ Successfully logged in to Clash of Clans API');
-  } catch (error) {
-    console.error('❌ Failed to login to Clash of Clans API:', error.message);
-    console.error('Please check your COC_API_KEY in .env file');
-    console.error('Make sure you have a valid API key from https://developer.clashofclans.com');
-    process.exit(1);
-  }
-})();
+// No authentication - using public endpoints only
 
 // Cache for 5 minutes
 const cache = new NodeCache({ stdTTL: 300 });
