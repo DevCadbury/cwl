@@ -54,9 +54,9 @@ const RoundCard = ({ round, roundNumber, clanTag, onWarClick }) => {
         </div>
 
         {/* Clans Comparison */}
-        <div className="grid grid-cols-3 gap-4 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
           {/* Our Clan */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 md:justify-start">
             <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 ring-2 ring-green-500/50 shadow-lg hover:ring-green-400 transition-all">
               {ourClan.badgeUrls?.url ? (
                 <img 
@@ -82,7 +82,20 @@ const RoundCard = ({ round, roundNumber, clanTag, onWarClick }) => {
           </div>
 
           {/* VS */}
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center md:hidden">
+            <div className="text-2xl font-bold text-primary-300 mb-1">
+              {ourClan.stars || 0} - {opponent.stars || 0}
+            </div>
+            <div className="text-xs text-dark-500 uppercase tracking-wider">VS</div>
+            {isFinished && (
+              <div className="text-xs text-dark-400 mt-1">
+                {ourClan.destructionPercentage?.toFixed(1)}% - {opponent.destructionPercentage?.toFixed(1)}%
+              </div>
+            )}
+          </div>
+
+          {/* VS Desktop */}
+          <div className="hidden md:flex flex-col items-center justify-center">
             <div className="text-2xl font-bold text-primary-300 mb-1">
               {ourClan.stars || 0} - {opponent.stars || 0}
             </div>
@@ -95,9 +108,9 @@ const RoundCard = ({ round, roundNumber, clanTag, onWarClick }) => {
           </div>
 
           {/* Opponent */}
-          <div className="flex items-center gap-3 justify-end">
-            <div className="min-w-0 flex-1 text-right">
-              <div className="flex items-center justify-end gap-2">
+          <div className="flex items-center gap-3 md:justify-end">
+            <div className="min-w-0 flex-1 md:text-right">
+              <div className="flex items-center md:justify-end gap-2">
                 <p className="text-sm font-semibold text-dark-50 truncate">{opponent.name}</p>
                 <button
                   onClick={(e) => {
@@ -112,7 +125,7 @@ const RoundCard = ({ round, roundNumber, clanTag, onWarClick }) => {
                   </svg>
                 </button>
               </div>
-              <div className="flex items-center gap-2 mt-1 justify-end">
+              <div className="flex items-center gap-2 mt-1 md:justify-end">
                 <span className="text-xs text-dark-400">{opponent.stars || 0}</span>
                 <StarRating stars={opponent.stars || 0} size="sm" />
               </div>

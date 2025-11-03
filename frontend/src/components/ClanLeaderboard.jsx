@@ -98,31 +98,160 @@ const ClanLeaderboard = ({ cwlData }) => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-dark-700">
-              <th className="text-left py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Rank</th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Clan</th>
-              <th className="text-center py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Stars</th>
-              <th className="text-center py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Destruction</th>
-              <th className="text-center py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Record</th>
-              <th className="text-center py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Members</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leaderboard.map((clan, index) => (
-              <motion.tr
-                key={clan.tag}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className={`border-b border-dark-800 hover:bg-dark-800/50 cursor-pointer transition-colors ${
-                  expandedClan === clan.tag ? 'bg-dark-800/50' : ''
-                }`}
-                onClick={() => setExpandedClan(expandedClan === clan.tag ? null : clan.tag)}
-              >
-                <td className="py-4 px-4">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${
+        {/* Desktop Table */}
+        <div className="hidden md:block">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-dark-700">
+                <th className="text-left py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Rank</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Clan</th>
+                <th className="text-center py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Stars</th>
+                <th className="text-center py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Destruction</th>
+                <th className="text-center py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Record</th>
+                <th className="text-center py-3 px-4 text-xs font-semibold text-dark-400 uppercase tracking-wider">Members</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaderboard.map((clan, index) => (
+                <motion.tr
+                  key={clan.tag}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`border-b border-dark-800 hover:bg-dark-800/50 cursor-pointer transition-colors ${
+                    expandedClan === clan.tag ? 'bg-dark-800/50' : ''
+                  }`}
+                  onClick={() => setExpandedClan(expandedClan === clan.tag ? null : clan.tag)}
+                >
+                  <td className="py-4 px-4">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold ${
+                      index === 0 ? 'bg-primary-300/20 text-primary-300' :
+                      index === 1 ? 'bg-dark-500 text-dark-300' :
+                      index === 2 ? 'bg-orange-900/20 text-orange-400' :
+                      'bg-dark-700 text-dark-400'
+                    }`}>
+                      {index + 1}
+                    </div>
+                  </td>
+                  <td className="py-4 px-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 ring-2 ring-primary-300/30 shadow-lg">
+                        {clan.badgeUrls?.url ? (
+                          <img 
+                            src={clan.badgeUrls.url} 
+                            alt={clan.name} 
+                            className="w-full h-full object-cover bg-gradient-to-br from-dark-700 to-dark-800"
+                            onError={(e) => {
+                              console.log('Badge URL failed to load:', clan.badgeUrls);
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-dark-700 to-dark-900 flex items-center justify-center">
+                            <svg className="w-6 h-6 text-dark-500" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <div className="font-bold text-dark-50 truncate">{clan.name}</div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/cwl/${clan.tag.replace('#', '')}`);
+                            }}
+                            className="flex-shrink-0 w-5 h-5 rounded flex items-center justify-center bg-primary-300/10 hover:bg-primary-300/20 transition-colors group"
+                            title="View clan profile"
+                          >
+                            <svg className="w-3 h-3 text-primary-300 group-hover:text-primary-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </button>
+                        </div>
+                        <div className="text-xs text-dark-500 font-mono">{clan.tag}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 px-4 text-center">
+                    <div className="text-xl font-bold text-primary-300">{clan.totalStars}</div>
+                  </td>
+                  <td className="py-4 px-4 text-center">
+                    <div className="text-lg font-bold text-green-400">
+                      {clan.wars > 0 ? (clan.totalDestruction / clan.wars).toFixed(1) : 0}%
+                    </div>
+                  </td>
+                  <td className="py-4 px-4 text-center">
+                    <div className="flex items-center justify-center gap-1 text-sm">
+                      <span className="text-green-400 font-semibold">{clan.wins}</span>
+                      <span className="text-dark-500">-</span>
+                      <span className="text-red-400 font-semibold">{clan.losses}</span>
+                      {clan.draws > 0 && (
+                        <>
+                          <span className="text-dark-500">-</span>
+                          <span className="text-dark-400 font-semibold">{clan.draws}</span>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                  <td className="py-4 px-4 text-center">
+                    <div className="text-sm text-dark-300">{clan.members}</div>
+                  </td>
+                </motion.tr>
+              ))}
+              
+              {expandedClan && (() => {
+                const clan = leaderboard.find(c => c.tag === expandedClan);
+                if (!clan || !clan.memberList || clan.memberList.length === 0) return null;
+
+                return (
+                  <tr key={`${expandedClan}-members`}>
+                    <td colSpan="6" className="py-4 px-4 bg-dark-900/50">
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="space-y-2"
+                      >
+                        <h4 className="text-sm font-semibold text-dark-400 mb-3">Roster ({clan.memberList.length} members)</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                          {clan.memberList.map((member, idx) => (
+                            <div key={member.tag} className="flex items-center gap-2 text-sm bg-dark-800 rounded p-2">
+                              <span className="text-dark-500 font-mono text-xs w-6">{idx + 1}.</span>
+                              <THIcon level={member.townHallLevel} size="xs" />
+                              <div className="flex-1 min-w-0">
+                                <div className="text-dark-200 truncate">{member.name}</div>
+                                <div className="text-xs text-dark-500 font-mono">{member.tag}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    </td>
+                  </tr>
+                );
+              })()}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden space-y-4">
+          {leaderboard.map((clan, index) => (
+            <motion.div
+              key={clan.tag}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className={`card cursor-pointer transition-colors ${
+                expandedClan === clan.tag ? 'ring-2 ring-primary-300/50' : ''
+              }`}
+              onClick={() => setExpandedClan(expandedClan === clan.tag ? null : clan.tag)}
+            >
+              <div className="p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold ${
                     index === 0 ? 'bg-primary-300/20 text-primary-300' :
                     index === 1 ? 'bg-dark-500 text-dark-300' :
                     index === 2 ? 'bg-orange-900/20 text-orange-400' :
@@ -130,108 +259,101 @@ const ClanLeaderboard = ({ cwlData }) => {
                   }`}>
                     {index + 1}
                   </div>
-                </td>
-                <td className="py-4 px-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 ring-2 ring-primary-300/30 shadow-lg">
-                      {clan.badgeUrls?.url ? (
-                        <img 
-                          src={clan.badgeUrls.url} 
-                          alt={clan.name} 
-                          className="w-full h-full object-cover bg-gradient-to-br from-dark-700 to-dark-800"
-                          onError={(e) => {
-                            console.log('Badge URL failed to load:', clan.badgeUrls);
-                            e.target.style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-dark-700 to-dark-900 flex items-center justify-center">
-                          <svg className="w-6 h-6 text-dark-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <div className="font-bold text-dark-50 truncate">{clan.name}</div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/cwl/${clan.tag.replace('#', '')}`);
-                          }}
-                          className="flex-shrink-0 w-5 h-5 rounded flex items-center justify-center bg-primary-300/10 hover:bg-primary-300/20 transition-colors group"
-                          title="View clan profile"
-                        >
-                          <svg className="w-3 h-3 text-primary-300 group-hover:text-primary-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
-                        </button>
+                  <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 ring-2 ring-primary-300/30 shadow-lg">
+                    {clan.badgeUrls?.url ? (
+                      <img 
+                        src={clan.badgeUrls.url} 
+                        alt={clan.name} 
+                        className="w-full h-full object-cover bg-gradient-to-br from-dark-700 to-dark-800"
+                        onError={(e) => {
+                          console.log('Badge URL failed to load:', clan.badgeUrls);
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-dark-700 to-dark-900 flex items-center justify-center">
+                        <svg className="w-6 h-6 text-dark-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
                       </div>
-                      <div className="text-xs text-dark-500 font-mono">{clan.tag}</div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <div className="font-bold text-dark-50 truncate">{clan.name}</div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/cwl/${clan.tag.replace('#', '')}`);
+                        }}
+                        className="flex-shrink-0 w-6 h-6 rounded flex items-center justify-center bg-primary-300/10 hover:bg-primary-300/20 transition-colors group"
+                        title="View clan profile"
+                      >
+                        <svg className="w-4 h-4 text-primary-300 group-hover:text-primary-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </button>
                     </div>
+                    <div className="text-xs text-dark-500 font-mono">{clan.tag}</div>
                   </div>
-                </td>
-                <td className="py-4 px-4 text-center">
-                  <div className="text-xl font-bold text-primary-300">{clan.totalStars}</div>
-                </td>
-                <td className="py-4 px-4 text-center">
-                  <div className="text-lg font-bold text-green-400">
-                    {clan.wars > 0 ? (clan.totalDestruction / clan.wars).toFixed(1) : 0}%
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary-300">{clan.totalStars}</div>
+                    <div className="text-xs text-dark-400">Stars</div>
                   </div>
-                </td>
-                <td className="py-4 px-4 text-center">
-                  <div className="flex items-center justify-center gap-1 text-sm">
-                    <span className="text-green-400 font-semibold">{clan.wins}</span>
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-green-400">
+                      {clan.wars > 0 ? (clan.totalDestruction / clan.wars).toFixed(1) : 0}%
+                    </div>
+                    <div className="text-xs text-dark-400">Destruction</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-400 font-semibold">{clan.wins}W</span>
                     <span className="text-dark-500">-</span>
-                    <span className="text-red-400 font-semibold">{clan.losses}</span>
+                    <span className="text-red-400 font-semibold">{clan.losses}L</span>
                     {clan.draws > 0 && (
                       <>
                         <span className="text-dark-500">-</span>
-                        <span className="text-dark-400 font-semibold">{clan.draws}</span>
+                        <span className="text-dark-400 font-semibold">{clan.draws}D</span>
                       </>
                     )}
                   </div>
-                </td>
-                <td className="py-4 px-4 text-center">
-                  <div className="text-sm text-dark-300">{clan.members}</div>
-                </td>
-              </motion.tr>
-            ))}
-            
-            {expandedClan && (() => {
-              const clan = leaderboard.find(c => c.tag === expandedClan);
-              if (!clan || !clan.memberList || clan.memberList.length === 0) return null;
+                  <div className="text-dark-300">{clan.members} members</div>
+                </div>
+              </div>
 
-              return (
-                <tr key={`${expandedClan}-members`}>
-                  <td colSpan="6" className="py-4 px-4 bg-dark-900/50">
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="space-y-2"
-                    >
-                      <h4 className="text-sm font-semibold text-dark-400 mb-3">Roster ({clan.memberList.length} members)</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                        {clan.memberList.map((member, idx) => (
-                          <div key={member.tag} className="flex items-center gap-2 text-sm bg-dark-800 rounded p-2">
-                            <span className="text-dark-500 font-mono text-xs w-6">{idx + 1}.</span>
-                            <THIcon level={member.townHallLevel} size="xs" />
-                            <div className="flex-1 min-w-0">
-                              <div className="text-dark-200 truncate">{member.name}</div>
-                              <div className="text-xs text-dark-500 font-mono">{member.tag}</div>
-                            </div>
+              {expandedClan === clan.tag && clan.memberList && clan.memberList.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="border-t border-dark-700 bg-dark-900/30"
+                >
+                  <div className="p-4">
+                    <h4 className="text-sm font-semibold text-dark-400 mb-3">Roster ({clan.memberList.length} members)</h4>
+                    <div className="grid grid-cols-1 gap-2">
+                      {clan.memberList.map((member, idx) => (
+                        <div key={member.tag} className="flex items-center gap-2 text-sm bg-dark-800 rounded p-2">
+                          <span className="text-dark-500 font-mono text-xs w-6">{idx + 1}.</span>
+                          <THIcon level={member.townHallLevel} size="xs" />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-dark-200 truncate">{member.name}</div>
+                            <div className="text-xs text-dark-500 font-mono">{member.tag}</div>
                           </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  </td>
-                </tr>
-              );
-            })()}
-          </tbody>
-        </table>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </motion.div>
+          ))}
+        </div>
       </div>
     </motion.div>
   );
