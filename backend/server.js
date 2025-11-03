@@ -9,14 +9,33 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Initialize Clash of Clans API client
+// Initialize Clash of Clans API client with email/password
 const client = new Client({
   cache: true,
   retryLimit: 3,
   restRequestTimeout: 5000
 });
 
-// No authentication - using public endpoints only
+// Login with email and password
+(async () => {
+  try {
+    if (!process.env.COC_EMAIL || !process.env.COC_PASSWORD) {
+      throw new Error('COC_EMAIL and COC_PASSWORD must be set in .env file');
+    }
+    
+    console.log('🔐 Logging in to Clash of Clans API...');
+    await client.login({
+      email: process.env.COC_EMAIL,
+      password: process.env.COC_PASSWORD
+    });
+    console.log('✅ Successfully logged in to Clash of Clans API');
+  } catch (error) {
+    console.error('❌ Failed to login to Clash of Clans API:', error.message);
+    console.error('Please check your COC_EMAIL and COC_PASSWORD in .env file');
+    console.error('Make sure you are using valid Supercell ID credentials');
+    process.exit(1);
+  }
+})();
 
 // Cache for 5 minutes
 const cache = new NodeCache({ stdTTL: 300 });
@@ -364,9 +383,16 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 CWL Tracker Backend running on port ${PORT}`);
-  console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
-  console.log(`� No authentication - using public endpoints only`);
-});
+// Start server only after successful login
+const startServer = async () => {
+  // Wait a moment for login to complete
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  
+  app.listen(PORT, () => {
+    console.log(`🚀 CWL Tracker Backend running on port ${PORT}`);
+    console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
+    console.log(`🔐 Authentication: Email/Password`);
+  });
+};
+
+startServer();
